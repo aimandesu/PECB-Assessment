@@ -332,3 +332,29 @@ npm test
 | `ticket-list.spec.ts`        | _(a component)_ loading/empty/error states, overdue highlight, debounced search |
 
 ---
+
+## Questionnaire
+
+1. How to run the backend and frontend locally, including database setup
+
+- Please Go to Getting Started Section, technically you just need to run Terminal 1 - API and Terminal 2 - Web App
+
+2. Where you placed the business rules and why
+
+- I place the business rules mostly in the model itself, please check Tiket.cs, most of the core logic is in it. The reason is because we follow the Rich Domain Model concept, for me in this scenario it is easier to control.
+
+3. Any assumptions you made
+
+- In the model Comment for Ticket variable I changed to TicketId since I think it is supposedly for that. Also I add a new variable for the model Ticket named Ticket Number so that I easily able to do the reference auto generated:
+
+```
+CONCAT('TCK-', YEAR([CreatedDate]), '-', RIGHT('0000' + CAST([TicketNumber] AS VARCHAR(20)), 4))
+```
+
+4. What you would improve or add with more time
+
+- Honestly for the backend I would say I did it througly one by one with minimal AI assistance, but for the frontend since its a frontend I never yet mastered, I did it with the help of AI Agent. So, I would say what I wanted to improve is learning Angular, get struggled and do hand by hand coding with minimal of AI assistance
+
+5. Roughly how long the assignment took you
+
+- For the backend I started doing it on 4PM on the first day I receive the email, and finished at 2AM. For the frontend I started on 2nd day at 12PM, well with the help of AI Agent to fully develop the frontend based on the backend I already build. But, I would say if there is a chance of Angular development, I would learn it througly or well any frontend given opportunity
