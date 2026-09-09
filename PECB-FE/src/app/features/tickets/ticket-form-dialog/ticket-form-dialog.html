@@ -1,0 +1,139 @@
+@if (open()) {
+  <div class="backdrop" (click)="cancel()">
+    <div
+      class="dialog"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="isEdit() ? 'Edit ticket' : 'New ticket'"
+      (click)="$event.stopPropagation()"
+    >
+      <header class="dialog__header">
+        <h2 class="dialog__title">{{ isEdit() ? 'Edit ticket' : 'New ticket' }}</h2>
+        @if (isEdit()) {
+          <span class="dialog__reference">{{ ticket()?.reference }}</span>
+        }
+      </header>
+
+      <form class="dialog__body" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <app-error-summary [error]="serverError()" />
+
+        <div class="field">
+          <label class="field__label" for="ticket-title">Title</label>
+          <input
+            id="ticket-title"
+            type="text"
+            class="input"
+            formControlName="title"
+            [maxlength]="limits.title"
+            autocomplete="off"
+          />
+          <app-field-error
+            [control]="form.controls.title"
+            label="Title"
+            [serverErrors]="errorsFor('title')"
+          />
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="ticket-description">Description</label>
+          <textarea
+            id="ticket-description"
+            class="input"
+            rows="4"
+            formControlName="description"
+            [maxlength]="limits.description"
+          ></textarea>
+          <div class="field__meta">
+            <app-field-error
+              [control]="form.controls.description"
+              label="Description"
+              [serverErrors]="errorsFor('description')"
+            />
+            <span class="field__count">
+              {{ form.controls.description.value.length }}/{{ limits.description }}
+            </span>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label class="field__label" for="ticket-customer-name">Customer name</label>
+            <input
+              id="ticket-customer-name"
+              type="text"
+              class="input"
+              formControlName="customerName"
+              [maxlength]="limits.customerName"
+              autocomplete="off"
+            />
+            <app-field-error
+              [control]="form.controls.customerName"
+              label="Customer name"
+              [serverErrors]="errorsFor('customerName')"
+            />
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="ticket-customer-email">Customer email</label>
+            <input
+              id="ticket-customer-email"
+              type="email"
+              class="input"
+              formControlName="customerEmail"
+              [maxlength]="limits.customerEmail"
+              autocomplete="off"
+            />
+            <app-field-error
+              [control]="form.controls.customerEmail"
+              label="Customer email"
+              [serverErrors]="errorsFor('customerEmail')"
+            />
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label class="field__label" for="ticket-priority">Priority</label>
+            <select id="ticket-priority" class="input" formControlName="priority">
+              @for (priority of priorities; track priority) {
+                <option [value]="priority">{{ priority }}</option>
+              }
+            </select>
+            <p class="field__hint">The due date is recalculated by the server from the priority.</p>
+            <app-field-error
+              [control]="form.controls.priority"
+              label="Priority"
+              [serverErrors]="errorsFor('priority')"
+            />
+          </div>
+
+          @if (isEdit()) {
+            <div class="field">
+              <label class="field__label" for="ticket-status">Status</label>
+              <select id="ticket-status" class="input" formControlName="status">
+                @for (status of statusOptions(); track status) {
+                  <option [value]="status">{{ statusLabel(status) }}</option>
+                }
+              </select>
+              <p class="field__hint">Only transitions allowed from the current status are listed.</p>
+              <app-field-error
+                [control]="form.controls.status"
+                label="Status"
+                [serverErrors]="errorsFor('status')"
+              />
+            </div>
+          }
+        </div>
+
+        <footer class="dialog__actions">
+          <button type="button" class="btn btn--ghost" [disabled]="submitting()" (click)="cancel()">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn--primary" [disabled]="submitting()">
+            {{ submitting() ? 'Saving...' : isEdit() ? 'Save changes' : 'Create ticket' }}
+          </button>
+        </footer>
+      </form>
+    </div>
+  </div>
+}

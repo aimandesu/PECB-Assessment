@@ -1,0 +1,287 @@
+<section class="page">
+  <a class="back-link" routerLink="/tickets">&larr; Back to tickets</a>
+
+  @if (state().error; as failure) {
+    <app-error-summary [error]="failure" />
+  } @else if (state().loading) {
+    <app-spinner label="Loading ticket..." />
+  } @else if (!ticket()) {
+    <div class="card">
+      <app-empty-state
+        title="Ticket not found"
+        hint="It may have been deleted, or the link may be out of date."
+      >
+        <a class="btn btn--primary" routerLink="/tickets">Back to tickets</a>
+      </app-empty-state>
+    </div>
+  } @else if (ticket(); as item) {
+    <header class="detail-header">
+      <div class="detail-header__main">
+        <p class="detail-header__reference">{{ item.reference || 'Reference pending' }}</p>
+        <h1 class="detail-header__title">{{ item.title }}</h1>
+        <div class="detail-header__badges">
+          <app-ticket-badge [value]="item.status" />
+          <app-ticket-badge [value]="item.priority" />
+          @if (item.isOverdue) {
+            <span class="overdue-flag">Overdue</span>
+          }
+        </div>
+      </div>
+
+      <div class="detail-header__actions">
+        <button
+          type="button"
+          class="btn btn--ghost"
+          [disabled]="readOnly()"
+          [title]="readOnly() ? 'Closed tickets are read-only' : 'Edit ticket'"
+          (click)="openEdit()"
+        >
+          Edit
+        </button>
+        <button type="button" class="btn btn--danger" (click)="confirmingDelete.set(true)">
+          Delete
+        </button>
+      </div>
+    </header>
+
+    @if (readOnly()) {
+      <p class="readonly-banner" role="status">
+        This ticket is closed and read-only. Status changes, assignment, editing and new comments
+        are disabled.
+      </p>
+    }
+
+    <div class="layout">
+      <div class="layout__main">
+        <article class="card card--padded">
+          <h2 class="section-title">Description</h2>
+          <p class="description">{{ item.description }}</p>
+        </article>
+
+        <article class="card card--padded">
+          <h2 class="section-title">
+            Comments <span class="count">{{ sortedComments().length }}</span>
+          </h2>
+
+          @if (sortedComments().length === 0) {
+            <p class="muted">No comments yet.</p>
+          } @else {
+            <ol class="thread">
+              @for (comment of sortedComments(); track comment.id) {
+                <li class="comment">
+                  <div class="comment__head">
+                    <span class="comment__author">{{ comment.authorName }}</span>
+                    <time class="comment__time" [attr.datetime]="comment.createdDate">
+                      {{ comment.createdDate | date: 'dd MMM yyyy, HH:mm' }}
+                    </time>
+                  </div>
+                  <p class="comment__body">{{ comment.body }}</p>
+                </li>
+              }
+            </ol>
+          }
+
+          <form class="comment-form" [formGroup]="commentForm" (ngSubmit)="addComment()" novalidate>
+            <h3 class="subsection-title">Add a comment</h3>
+            <app-error-summary [error]="commentError()" />
+
+            <div class="field">
+              <label class="field__label" for="comment-author">Your name</label>
+              <input
+                id="comment-author"
+                type="text"
+                class="input"
+                formControlName="authorName"
+                [maxlength]="limits.commentAuthor"
+                autocomplete="name"
+              />
+              <app-field-error
+                [control]="commentForm.controls.authorName"
+                label="Your name"
+                [serverErrors]="commentServerErrors('authorName')"
+              />
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="comment-body">Comment</label>
+              <textarea
+                id="comment-body"
+                class="input"
+                rows="3"
+                formControlName="body"
+                [maxlength]="limits.commentBody"
+              ></textarea>
+              <div class="field__meta">
+                <app-field-error
+                  [control]="commentForm.controls.body"
+                  label="Comment"
+                  [serverErrors]="commentServerErrors('body')"
+                />
+                <span class="field__count">
+                  {{ commentForm.controls.body.value.length }}/{{ limits.commentBody }}
+                </span>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn--primary"
+              [disabled]="readOnly() || postingComment()"
+            >
+              {{ postingComment() ? 'Posting...' : 'Post comment' }}
+            </button>
+          </form>
+        </article>
+      </div>
+
+      <aside class="layout__side">
+        <section class="card card--padded">
+          <h2 class="section-title">Status</h2>
+          <app-error-summary [error]="statusError()" />
+
+          <p class="current">
+            Currently <app-ticket-badge [value]="item.status" />
+          </p>
+
+          @if (transitions().length === 0) {
+            <p class="muted">
+              No further transitions are available from
+              {{ statusLabel(item.status) }}.
+            </p>
+          } @else {
+            <div class="transitions">
+              @for (transition of transitions(); track transition.target) {
+                <div class="transition">
+                  <button
+                    type="button"
+                    class="btn btn--outline"
+                    [disabled]="readOnly() || transition.blocked || changingStatus()"
+                    (click)="changeStatus(transition.target)"
+                  >
+                    Move to {{ statusLabel(transition.target) }}
+                  </button>
+                  @if (transition.blocked && transition.reason) {
+                    <p class="transition__reason">{{ transition.reason }}</p>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </section>
+
+        <section class="card card--padded">
+          <h2 class="section-title">Assigned agent</h2>
+          <app-error-summary [error]="assignError()" />
+
+          @if (assignedAgent(); as agent) {
+            <p class="current">
+              <strong>{{ agent.fullName }}</strong>
+              <span class="muted"> &middot; {{ agent.department }}</span>
+            </p>
+            <button
+              type="button"
+              class="btn btn--ghost"
+              [disabled]="readOnly() || assigning()"
+              (click)="unassign()"
+            >
+              Unassign
+            </button>
+          } @else if (item.assignedAgent) {
+            <p class="current muted">Assigned to an agent outside the current roster.</p>
+          } @else {
+            <p class="muted">Nobody is assigned to this ticket yet.</p>
+          }
+
+          <div class="assign">
+            <label class="field__label" for="assign-agent">
+              {{ assignedAgent() ? 'Reassign to' : 'Assign to' }}
+            </label>
+            <select
+              id="assign-agent"
+              class="input"
+              [formControl]="agentControl"
+            >
+              <option value="">Select an agent</option>
+              @for (agent of activeAgents(); track agent.id) {
+                <option [value]="agent.id">{{ agent.fullName }} ({{ agent.department }})</option>
+              }
+            </select>
+            @if (activeAgents().length === 0) {
+              <p class="muted small">
+                No active agents were returned by the API. Create one with POST /agent/create.
+              </p>
+            }
+            <button
+              type="button"
+              class="btn btn--primary"
+              [disabled]="readOnly() || assigning() || !agentControl.value"
+              (click)="assign()"
+            >
+              {{ assigning() ? 'Saving...' : 'Assign' }}
+            </button>
+          </div>
+        </section>
+
+        <section class="card card--padded">
+          <h2 class="section-title">Details</h2>
+          <dl class="facts">
+            <dt>Customer</dt>
+            <dd>
+              {{ item.customerName }}
+              <span class="muted small">{{ item.customerEmail }}</span>
+            </dd>
+
+            <dt>Due date</dt>
+            <dd [class.is-overdue-text]="item.isOverdue">
+              {{ item.dueDate | date: 'dd MMM yyyy, HH:mm' }}
+              <span class="muted small">{{ item.dueDate | dueIn }}</span>
+            </dd>
+
+            <dt>Created</dt>
+            <dd>
+              @if (hasRealDate(item.createdDate)) {
+                {{ item.createdDate | date: 'dd MMM yyyy, HH:mm' }}
+              } @else {
+                <span class="muted" title="The API did not return a creation date">Not reported</span>
+              }
+            </dd>
+
+            <dt>Last modified</dt>
+            <dd>{{ item.lastModifiedDate | date: 'dd MMM yyyy, HH:mm' }}</dd>
+
+            @if (item.resolvedDate) {
+              <dt>Resolved</dt>
+              <dd>{{ item.resolvedDate | date: 'dd MMM yyyy, HH:mm' }}</dd>
+            }
+
+            @if (item.closedDate) {
+              <dt>Closed</dt>
+              <dd>{{ item.closedDate | date: 'dd MMM yyyy, HH:mm' }}</dd>
+            }
+          </dl>
+        </section>
+      </aside>
+    </div>
+
+    <app-ticket-form-dialog
+      [open]="formOpen()"
+      [ticket]="item"
+      (saved)="onSaved()"
+      (closed)="closeForm()"
+    />
+
+    <app-confirm-dialog
+      [open]="confirmingDelete()"
+      title="Delete ticket"
+      [message]="
+        'Ticket ' +
+        (item.reference || item.title) +
+        ' and all of its comments will be permanently removed. This cannot be undone.'
+      "
+      confirmLabel="Delete ticket"
+      [busy]="deleting()"
+      (confirmed)="confirmDelete()"
+      (cancelled)="confirmingDelete.set(false)"
+    />
+  }
+</section>
