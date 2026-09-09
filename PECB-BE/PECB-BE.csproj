@@ -21,4 +21,13 @@
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.11.0" />
     </ItemGroup>
 
+    <!-- The Tests folder is its own project. Without this the Web SDK's default
+         **/*.cs glob would compile the test files into the API assembly. -->
+    <ItemGroup>
+        <Compile Remove="Tests\**" />
+        <Content Remove="Tests\**" />
+        <EmbeddedResource Remove="Tests\**" />
+        <None Remove="Tests\**" />
+    </ItemGroup>
+
 </Project>

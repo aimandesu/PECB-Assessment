@@ -37,56 +37,56 @@ public class TicketRepository(
         var query = context.Tickets
             .AsNoTracking()
             .AsQueryable();
-        
-        if (r.Search is not null)
+
+        // One search box, matched against the three fields a user would search by.
+        // The terms are OR'd: requiring all three to match would never return a row.
+        if (!string.IsNullOrWhiteSpace(r.Search))
         {
-            if (string.IsNullOrEmpty(r.Search.Title))
-            {
-                query = query.Where(t => 
-                    t.Title == r.Search.Title);
-            }
+            var term = r.Search.Trim();
 
-            if (string.IsNullOrEmpty(r.Search.CustomerName))
-            {
-                query = query.Where(t => 
-                    t.CustomerName == r.Search.CustomerName);
-            }
-
-            if (string.IsNullOrEmpty(r.Search.Reference))
-            {
-                query = query.Where(t => 
-                    t.Reference == r.Search.Reference);
-            }
-                
+            query = query.Where(t =>
+                t.Reference.Contains(term) ||
+                t.Title.Contains(term) ||
+                t.CustomerName.Contains(term));
         }
 
-        if (r.Filter is not null)
+        if (r.Status.HasValue)
         {
-            if (r.Filter.Status.HasValue)
-            {
-                query = query.Where(t => 
-                    t.Status == r.Filter.Status.Value);
-            }
-
-            if (r.Filter.Priority.HasValue)
-            {
-                query = query.Where(t => 
-                    t.Priority == r.Filter.Priority.Value);
-            }
-
-            if (r.Filter.AgentId.HasValue)
-            {
-                query = query.Where(t => 
-                    t.AssignedAgent == r.Filter.AgentId.Value);
-            }
-                
-            query = query.Where(t => 
-                t.IsOverdue == r.Filter.IsTicketOverdue);
-                
+            query = query.Where(t => t.Status == r.Status.Value);
         }
-        
-        return query;
-        
+
+        if (r.Priority.HasValue)
+        {
+            query = query.Where(t => t.Priority == r.Priority.Value);
+        }
+
+        if (r.AgentId.HasValue)
+        {
+            query = query.Where(t => t.AssignedAgent == r.AgentId.Value);
+        }
+
+        // Ticket.IsOverdue is a computed CLR property that EF cannot translate, so the
+        // same rule is expressed here in terms EF can turn into SQL. The filter is only
+        // applied when the caller actually asked for it.
+        if (r.IsTicketOverdue.HasValue)
+        {
+            var now = DateTimeOffset.UtcNow;
+
+            query = r.IsTicketOverdue.Value
+                ? query.Where(t =>
+                    t.DueDate < now &&
+                    t.Status != Status.Resolved &&
+                    t.Status != Status.Closed)
+                : query.Where(t =>
+                    t.DueDate >= now ||
+                    t.Status == Status.Resolved ||
+                    t.Status == Status.Closed);
+        }
+
+        // SQL Server needs a deterministic ordering for OFFSET/FETCH paging; without one
+        // EF falls back to an arbitrary order and rows can repeat or vanish across pages.
+        // TicketNumber is the identity column behind Reference, so this is newest-first.
+        return query.OrderByDescending(t => EF.Property<int>(t, "TicketNumber"));
     }
 
     public async Task<Ticket?> Update(Ticket ticket)

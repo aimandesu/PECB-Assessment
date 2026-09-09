@@ -23,9 +23,18 @@ app.UseExceptionHandler();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+
+    // Create/migrate the database and seed agents so a fresh clone runs as-is.
+    await app.PrepareDevelopmentDatabaseAsync();
+}
+else
+{
+    // Skipped in Development on purpose: the Angular dev server proxies to the HTTP port,
+    // and redirecting those calls to the HTTPS port turns them into blocked cross-origin
+    // requests. Outside Development there is no proxy, so the redirect belongs back on.
+    app.UseHttpsRedirection();
 }
 
 app.MapCarter();
-app.UseHttpsRedirection();
 app.Run();
 
