@@ -16,10 +16,10 @@ PECB-Assessment/
 
 ### Prerequisites
 
-| Tool | Version | Notes |
-|---|---|---|
-| .NET SDK | 9.0 or newer | Targets `net9.0`; `global.json` rolls forward to the latest installed major |
-| Node.js | 20 or newer | Developed on 22.17 |
+| Tool       | Version            | Notes                                                                        |
+| ---------- | ------------------ | ---------------------------------------------------------------------------- |
+| .NET SDK   | 9.0 or newer       | Targets `net9.0`; `global.json` rolls forward to the latest installed major  |
+| Node.js    | 20 or newer        | Developed on 22.17                                                           |
 | SQL Server | any local instance | LocalDB (ships with Visual Studio / SQL Server Express) works out of the box |
 
 ### Run it
@@ -58,12 +58,12 @@ try comments, status transitions, assignment and delete.
 
 ### Ports
 
-| What | URL |
-|---|---|
-| **Web app** — open this one | <http://localhost:4200> |
-| API (`http` launch profile) | <http://localhost:5184> |
-| API (`https` launch profile, optional) | <https://localhost:7046> |
-| OpenAPI document (Development only) | <http://localhost:5184/openapi/v1.json> |
+| What                                   | URL                                     |
+| -------------------------------------- | --------------------------------------- |
+| **Web app** — open this one            | <http://localhost:4200>                 |
+| API (`http` launch profile)            | <http://localhost:5184>                 |
+| API (`https` launch profile, optional) | <https://localhost:7046>                |
+| OpenAPI document (Development only)    | <http://localhost:5184/openapi/v1.json> |
 
 The Angular dev server proxies `/api/*` to `http://localhost:5184`
 (`PECB-FE/proxy.conf.json`), so the browser only ever talks to `localhost:4200`. Nothing is
@@ -75,13 +75,13 @@ back on.
 
 ### Configuration
 
-| Setting | Where | Default |
-|---|---|---|
-| Connection string | `PECB-BE/appsettings.json` | `(localdb)\MSSQLLocalDB`, database `PECB` |
-| API port | `PECB-BE/Properties/launchSettings.json` | `5184` (http), `7046` (https) |
-| Web port | `PECB-FE/angular.json` → `serve.options.port` | `4200` |
-| Proxy target | `PECB-FE/proxy.conf.json` | `http://localhost:5184` |
-| API base path | `PECB-FE/src/environments/environment.ts` | `/api` |
+| Setting           | Where                                         | Default                                   |
+| ----------------- | --------------------------------------------- | ----------------------------------------- |
+| Connection string | `PECB-BE/appsettings.json`                    | `(localdb)\MSSQLLocalDB`, database `PECB` |
+| API port          | `PECB-BE/Properties/launchSettings.json`      | `5184` (http), `7046` (https)             |
+| Web port          | `PECB-FE/angular.json` → `serve.options.port` | `4200`                                    |
+| Proxy target      | `PECB-FE/proxy.conf.json`                     | `http://localhost:5184`                   |
+| API base path     | `PECB-FE/src/environments/environment.ts`     | `/api`                                    |
 
 To point at a different SQL Server instance, create `PECB-BE/appsettings.Development.json`
 (it is gitignored, so it stays on your machine):
@@ -98,13 +98,13 @@ If you change the API port, update `proxy.conf.json` to match.
 
 ### Troubleshooting
 
-| Symptom | Cause and fix |
-|---|---|
+| Symptom                                                     | Cause and fix                                                                                                                   |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | `Could not prepare the development database` in the API log | SQL Server is not reachable. Check the instance name in the connection string; run `sqllocaldb info` to list LocalDB instances. |
-| The ticket list shows *Could not reach the API* | The API is not running, or it is not on `5184`. Start Terminal 1, or update `proxy.conf.json`. |
-| `Failed to bind to address ... already in use` | Another instance is still running. Stop it, or change the port in `launchSettings.json` and `proxy.conf.json`. |
-| `dotnet` fails inside `PECB-BE/` | `global.json` is pinned to an SDK you do not have. It uses `rollForward: latestMajor`, so any SDK from 9.0 up works. |
-| The agent dropdown is empty | Seeding only runs when the roster is empty and the database is reachable. Check the API log, or `POST /agent/create`. |
+| The ticket list shows _Could not reach the API_             | The API is not running, or it is not on `5184`. Start Terminal 1, or update `proxy.conf.json`.                                  |
+| `Failed to bind to address ... already in use`              | Another instance is still running. Stop it, or change the port in `launchSettings.json` and `proxy.conf.json`.                  |
+| `dotnet` fails inside `PECB-BE/`                            | `global.json` is pinned to an SDK you do not have. It uses `rollForward: latestMajor`, so any SDK from 9.0 up works.            |
+| The agent dropdown is empty                                 | Seeding only runs when the roster is empty and the database is reachable. Check the API log, or `POST /agent/create`.           |
 
 ---
 
@@ -221,12 +221,12 @@ e.g. `TCK-2026-0001`.
 changes — always measured from the creation time, so re-prioritising never restarts the
 clock:
 
-| Priority | Due |
-|---|---|
+| Priority | Due      |
+| -------- | -------- |
 | Critical | +4 hours |
-| High | +1 day |
-| Normal | +3 days |
-| Low | +7 days |
+| High     | +1 day   |
+| Normal   | +3 days  |
+| Low      | +7 days  |
 
 **Status transitions:**
 
@@ -239,7 +239,7 @@ New ──(requires an assigned agent)──► InProgress ──► Resolved �
 Anything else is rejected. `Resolved` stamps `ResolvedDate`, `Closed` stamps `ClosedDate`
 and seals the ticket: no status change, no edit, no new comments.
 
-**Overdue** = the due date has passed *and* the ticket is neither Resolved nor Closed.
+**Overdue** = the due date has passed _and_ the ticket is neither Resolved nor Closed.
 Overdue rows are highlighted in the list with a red rule, a tinted background and a chip.
 
 ---
@@ -252,7 +252,7 @@ Base URL `http://localhost:5184`. Enums are sent and received as **strings**
 Most endpoints wrap their payload in `ResultResponse<T>`:
 
 ```json
-{ "data": { }, "description": "optional message" }
+{ "data": {}, "description": "optional message" }
 ```
 
 Errors use:
@@ -266,32 +266,32 @@ Errors use:
 
 ### Tickets
 
-| Method | Route | Input |
-|---|---|---|
-| `GET` | `/ticket/get-all` | query: `search`, `status`, `priority`, `agentId`, `isTicketOverdue`, `pageNumber`, `pageSize` |
-| `GET` | `/ticket/get` | query: `ticketId` |
-| `POST` | `/ticket/create` | body: `title, description, customerName, customerEmail, priority` |
-| `PATCH` | `/ticket/update` | body: `id, title, description, customerName, customerEmail, priority, status` |
-| `PATCH` | `/ticket/status` | body: `ticketId, status` |
-| `PATCH` | `/ticket/assigner` | body: `ticketId, agentId, assignerOption` |
-| `DELETE` | `/ticket/delete` | query: `ticketId` |
+| Method   | Route              | Input                                                                                         |
+| -------- | ------------------ | --------------------------------------------------------------------------------------------- |
+| `GET`    | `/ticket/get-all`  | query: `search`, `status`, `priority`, `agentId`, `isTicketOverdue`, `pageNumber`, `pageSize` |
+| `GET`    | `/ticket/get`      | query: `ticketId`                                                                             |
+| `POST`   | `/ticket/create`   | body: `title, description, customerName, customerEmail, priority`                             |
+| `PATCH`  | `/ticket/update`   | body: `id, title, description, customerName, customerEmail, priority, status`                 |
+| `PATCH`  | `/ticket/status`   | body: `ticketId, status`                                                                      |
+| `PATCH`  | `/ticket/assigner` | body: `ticketId, agentId, assignerOption`                                                     |
+| `DELETE` | `/ticket/delete`   | query: `ticketId`                                                                             |
 
 `GET /ticket/get-all` is the one endpoint that returns a **bare `Paginate<T>`** rather than
 the envelope — `search` matches reference, title or customer name (OR'd, case-insensitive
 substring), `pageSize` is clamped to 100, and results are ordered newest-first:
 
 ```json
-{ "data": [ ], "currentPage": 1, "pageSize": 10, "total": 42, "lastPage": 5 }
+{ "data": [], "currentPage": 1, "pageSize": 10, "total": 42, "lastPage": 5 }
 ```
 
 ### Comments and agents
 
-| Method | Route | Input |
-|---|---|---|
+| Method | Route                    | Input                              |
+| ------ | ------------------------ | ---------------------------------- |
 | `POST` | `/comment/ticket/create` | body: `ticketId, authorName, body` |
-| `GET` | `/agent/get-all` | query: `department` (optional) |
-| `GET` | `/agent/get` | query: `agentId` |
-| `POST` | `/agent/create` | body: `fullName, department` |
+| `GET`  | `/agent/get-all`         | query: `department` (optional)     |
+| `GET`  | `/agent/get`             | query: `agentId`                   |
+| `POST` | `/agent/create`          | body: `fullName, department`       |
 
 ### Field limits
 
@@ -308,11 +308,11 @@ customer email 250, comment author 100, comment body 200.
 dotnet test PECB-BE/Tests/PECB-BE.Tests.csproj
 ```
 
-| File | Covers |
-|---|---|
-| `TicketStatusTransitionTests.cs` | every legal and illegal transition, the agent precondition, the read-only seal |
-| `TicketDueDateTests.cs` | the SLA per priority, recalculation, that re-prioritising does not restart the clock |
-| `TicketAssignmentAndCommentTests.cs` | inactive-agent and wrong-assignee guards, comments on closed tickets |
+| File                                 | Covers                                                                               |
+| ------------------------------------ | ------------------------------------------------------------------------------------ |
+| `TicketStatusTransitionTests.cs`     | every legal and illegal transition, the agent precondition, the read-only seal       |
+| `TicketDueDateTests.cs`              | the SLA per priority, recalculation, that re-prioritising does not restart the clock |
+| `TicketAssignmentAndCommentTests.cs` | inactive-agent and wrong-assignee guards, comments on closed tickets                 |
 
 They live in `PECB-BE/Tests/` and are part of `PECB-BE.sln`. They exercise the `Ticket`
 entity directly, so they need no database and run in ~90 ms.
@@ -324,66 +324,11 @@ cd PECB-FE
 npm test
 ```
 
-| File | Covers |
-|---|---|
-| `status-transitions.spec.ts` | the client mirror of the transition rules |
-| `api-error.spec.ts` | validation blob → per-field messages |
-| `ticket.service.spec.ts` | *(a service)* query params, envelope unwrap, rule violations |
-| `ticket-list.spec.ts` | *(a component)* loading/empty/error states, overdue highlight, debounced search |
+| File                         | Covers                                                                          |
+| ---------------------------- | ------------------------------------------------------------------------------- |
+| `status-transitions.spec.ts` | the client mirror of the transition rules                                       |
+| `api-error.spec.ts`          | validation blob → per-field messages                                            |
+| `ticket.service.spec.ts`     | _(a service)_ query params, envelope unwrap, rule violations                    |
+| `ticket-list.spec.ts`        | _(a component)_ loading/empty/error states, overdue highlight, debounced search |
 
 ---
-
-## Known issues
-
-Found while wiring the frontend; **not yet fixed**.
-
-**Response shape**
-
-- `createdDate` comes back as `0001-01-01`. `Ticket.CreatedDate` is `private`, so Mapster
-  cannot read it. Making it public fixes it. The UI shows "Not reported" meanwhile.
-- The agent endpoints return `Entities.Agent` directly, leaking the navigation property:
-  `"tickets": []`. They should return a DTO.
-- `POST /comment/ticket/create` likewise returns the raw entity.
-- "Not found" returns HTTP 200 with `data: null` on `/ticket/get`, `/ticket/update` and
-  `/ticket/delete`, but 404 on `/ticket/assigner`. Inconsistent, and the client has to
-  inspect the payload rather than the status code.
-
-**Validation and errors**
-
-- Validators check `NotEmpty` but never `MaximumLength`, so an over-long field passes
-  FluentValidation and then fails at the database as a 500 instead of a clean 400.
-- FluentValidation messages carry no field names, so the client re-attaches them to inputs
-  by keyword matching (`core/http/api-error.ts`).
-- `GlobalExceptionHandler` maps *every* `InvalidOperationException` to 400 and echoes
-  `exception.Message`. EF's "could not be translated" is an `InvalidOperationException`, so
-  a genuine server fault would be disguised as a client error with EF internals leaked.
-- A malformed enum in the query string (`?status=Nonsense`) returns 500 rather than 400,
-  because the binding failure falls through to the generic handler.
-- The status-transition message reads `...to Closed.Either because...` — a missing space.
-
-**Correctness**
-
-- `PATCH /ticket/update` calls `UpdateStatus(ticket.Status)`, which returns early when the
-  status is unchanged — so **field edits on a closed ticket are accepted by the API**,
-  contradicting the read-only rule. The frontend blocks it; the API does not.
-- `PATCH /ticket/assigner` has no read-only guard either, so an agent can be assigned to a
-  closed ticket.
-- `.Adapt<TicketDto>()` is called *before* the null check in the Get, Delete and Assigner
-  endpoints.
-- `GetTicket` returns `AsNoTracking().Include(Comments)`, then `Update()` marks the entire
-  graph dirty — one redundant UPDATE per comment on every save.
-- The repositories take `CancellationToken cancellationToken = default` as a **constructor**
-  parameter. DI cannot supply one, so it is always `default` and no `SaveChangesAsync` call
-  is actually cancellable. It belongs on the methods.
-- `GetAgent.Endpoint` is declared *inside* the `Validator` class. Carter still registers it,
-  but that is clearly not intended.
-
-**Environment**
-
-- No CORS policy. Fine behind the dev proxy; required if the two are deployed separately.
-
-**Not testable as written**
-
-`DueDate` is derived from a private `CreatedDate` stamped at construction with no injectable
-clock, so the *actually overdue* path cannot be unit-tested — only the not-overdue and
-finished-ticket cases are. A `TimeProvider` would close that gap.
