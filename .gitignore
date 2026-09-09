@@ -1,0 +1,40 @@
+# ==========================================
+# BACKEND: ASP.NET Core (PECB-BE)
+# ==========================================
+PECB-BE/bin/
+PECB-BE/obj/
+PECB-BE/Properties/publishProfiles/
+PECB-BE/msvsmon.sqlite
+PECB-BE/*.user
+PECB-BE/*.userosscache
+PECB-BE/*.sln.docstates
+
+# Secrets and local configurations
+PECB-BE/appsettings.Development.json
+PECB-BE/appsettings.Local.json
+
+# User-specific files
+.vs/
+.vscode/
+
+# ==========================================
+# FRONTEND: Angular (PECB-FE)
+# ==========================================
+# Dependencies and builds
+PECB-FE/node_modules/
+PECB-FE/.angular/
+PECB-FE/dist/
+
+# Local environment overrides
+PECB-FE/src/environments/environment.development.ts
+PECB-FE/src/environments/environment.local.ts
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS specific files
+.DS_Store
+Thumbs.db

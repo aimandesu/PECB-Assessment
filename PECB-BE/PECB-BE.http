@@ -1,0 +1,6 @@
+@PECB_BE_HostAddress = http://localhost:5184
+
+GET {{PECB_BE_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
