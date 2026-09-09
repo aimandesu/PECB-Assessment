@@ -1,21 +1,32 @@
 # ==========================================
 # BACKEND: ASP.NET Core (PECB-BE)
 # ==========================================
-PECB-BE/bin/
-PECB-BE/obj/
+**/bin/
+**/obj/
 PECB-BE/Properties/publishProfiles/
-PECB-BE/msvsmon.sqlite
-PECB-BE/*.user
-PECB-BE/*.userosscache
-PECB-BE/*.sln.docstates
+**/msvsmon.sqlite
+**/*.user
+**/*.userosscache
+**/*.sln.docstates
 
-# Secrets and local configurations
+# Local connection strings and secrets.
+# A working default ships in the committed appsettings.json, so a fresh clone runs
+# without these files; add one only to point at a different SQL Server instance.
 PECB-BE/appsettings.Development.json
 PECB-BE/appsettings.Local.json
+**/secrets.json
 
 # User-specific files
 .vs/
 .vscode/
+.idea/
+
+# ==========================================
+# BACKEND TESTS: xUnit (PECB-BE/Tests)
+# ==========================================
+TestResults/
+*.trx
+*.coverage
 
 # ==========================================
 # FRONTEND: Angular (PECB-FE)
