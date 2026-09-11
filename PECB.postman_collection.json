@@ -1,0 +1,344 @@
+{
+  "info": {
+    "_postman_id": "119b6f2a-75b6-41d3-a0ee-455dfdf71f1a",
+    "name": "PECB",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "33511040"
+  },
+  "item": [
+    {
+      "name": "Ticket",
+      "item": [
+        {
+          "name": "Add Ticket",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Title\": \"Test latest\",\r\n  \"Description\": \"This is a sample ticket that works.\",\r\n  \"CustomerName\": \"John baptis\",\r\n  \"CustomerEmail\": \"jonhhbaitps@example.com\",\r\n  \"Priority\": \"Low\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{endpoint}}/ticket/create",
+              "host": [
+                "{{endpoint}}"
+              ],
+              "path": [
+                "ticket",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Assign Ticket",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"TicketId\": \"70408F5D-2FA7-4FCD-BB05-7532281B1C73\",\r\n    \"AgentId\": \"456FA276-2287-4464-8AF6-71DF4B66C7FE\",\r\n    \"AssignerOption\": \"Assign\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{endpoint}}/ticket/assigner",
+              "host": [
+                "{{endpoint}}"
+              ],
+              "path": [
+                "ticket",
+                "assigner"
+              ],
+              "query": [
+                {
+                  "key": "",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Ticket",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Id\": \"70408F5D-2FA7-4FCD-BB05-7532281B1C73\",\r\n  \"Title\": \"This is title part ma\",\r\n  \"Description\": \"This is a sample description.\",\r\n  \"CustomerName\": \"John Doe\",\r\n  \"CustomerEmail\": \"johndoe@example.com\",\r\n  \"Priority\": \"High\",\r\n  \"Status\": \"Resolved\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{endpoint}}/ticket/update",
+              "host": [
+                "{{endpoint}}"
+              ],
+              "path": [
+                "ticket",
+                "update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Ticket Status",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"TicketId\": \"70408F5D-2FA7-4FCD-BB05-7532281B1C73\",\r\n  \"Status\": \"Closed\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{endpoint}}/ticket/status?TicketId=&Status=",
+              "host": [
+                "{{endpoint}}"
+              ],
+              "path": [
+                "ticket",
+                "status"
+              ],
+              "query": [
+                {
+                  "key": "TicketId",
+                  "value": ""
+                },
+                {
+                  "key": "Status",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Tickets - Pagination",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{endpoint}}/ticket/get-all",
+              "host": [
+                "{{endpoint}}"
+              ],
+              "path": [
+                "ticket",
+                "get-all"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Ticket",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{endpoint}}/ticket/get?ticketId=CE50C4B6-6B9E-46B9-9C1E-AC779DF4974F",
+              "host": [
+                "{{endpoint}}"
+              ],
+              "path": [
+                "ticket",
+                "get"
+              ],
+              "query": [
+                {
+                  "key": "ticketId",
+                  "value": "CE50C4B6-6B9E-46B9-9C1E-AC779DF4974F"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Ticket",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{endpoint}}/ticket/delete?ticketId=7D4CA9A7-F41D-4CE3-B3D6-7D478CA9C54D",
+              "host": [
+                "{{endpoint}}"
+              ],
+              "path": [
+                "ticket",
+                "delete"
+              ],
+              "query": [
+                {
+                  "key": "ticketId",
+                  "value": "7D4CA9A7-F41D-4CE3-B3D6-7D478CA9C54D"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Agent",
+      "item": [
+        {
+          "name": "Create Agent",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"FullName\": \"Namia\",\r\n    \"Department\": \"Technical\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{endpoint}}/agent/create",
+              "host": [
+                "{{endpoint}}"
+              ],
+              "path": [
+                "agent",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Agent",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{endpoint}}/agent/get?AgentId=aafde15c-059d-40a2-8e38-de4e54b94ff6",
+              "host": [
+                "{{endpoint}}"
+              ],
+              "path": [
+                "agent",
+                "get"
+              ],
+              "query": [
+                {
+                  "key": "AgentId",
+                  "value": "aafde15c-059d-40a2-8e38-de4e54b94ff6"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Agent",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{endpoint}}/agent/get-all?Department=Technical",
+              "host": [
+                "{{endpoint}}"
+              ],
+              "path": [
+                "agent",
+                "get-all"
+              ],
+              "query": [
+                {
+                  "key": "Department",
+                  "value": "Technical"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Comment",
+      "item": [
+        {
+          "name": "Create Comment",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"TicketId\": \"D89AF072-56F9-4CF5-9B7E-317B67B9B5A0\",\r\n    \"AuthorName\": \"Namia\",\r\n    \"Body\": \"What is gg this\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{endpoint}}/comment/ticket/create",
+              "host": [
+                "{{endpoint}}"
+              ],
+              "path": [
+                "comment",
+                "ticket",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "endpoint",
+      "value": ""
+    }
+  ]
+}
